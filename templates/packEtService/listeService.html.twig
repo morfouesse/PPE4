@@ -1,0 +1,64 @@
+{% extends "fragment/_navbar.html.twig" %}
+
+
+
+{% block content %}
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+
+                        <tr>
+                            <th scope="col">Nom des services</th>
+                            <th scope="col">nombres de droits du service</th>
+                            <th scope="col">Choisir ce service</th>
+                        </tr>
+
+
+                    <tbody>{# si #}
+                        {% if limiteServiceSALARIE == 1 %}
+                        {% if limiteServiceCADRE == 1 %}
+                        {% for leService in lesServices %}
+
+                        <tr>
+                            <td>{{ leService.nom }}</td>
+                            <td>{{ leService.nbDroit }}</td>
+                            {#verifie si le user à deja choisi le service#}
+                         
+                            {% if leService.actif== 1 %}
+                            <td><a href={{ path('choixDuService', {'idService': leService.id}) }}
+                                class="btn btn-primary disabled"
+                                role="button" aria-disabled="true">choisir ce service</a>
+                                <br>
+                                 <small>ce service est réservé</small>
+                            </td>                              
+                              {% else %}
+                                 <td><a href={{ path('choixDuService', {'idService': leService.id}) }}
+                                        class="btn btn-primary">choisir ce service</a></td>
+                                 {% endif  %}  
+                        </tr>             
+                        {% endfor %} 
+                        {% else %}
+                        <h3>vous avez atteint la limite du nombre de service pour un cadre qui est de 10 services</h3>
+                        <br>
+                        <a href={{ path('vosServices',{ 'lesServicesDuUser':lesServicesDuUser,'idPack':idPack }) }} class="btn btn-primary">retour à vos services</a>
+                        {% endif %}
+                        {% else %}
+                        <h3>vous avez atteint la limite du nombre de service pour un salarier qui est de 5 services</h3>
+                        <br>
+                        <a href={{ path('vosServices',{ 'lesServicesDuUser':lesServicesDuUser,'idPack':idPack }) }} class="btn btn-primary">retour à vos services</a>
+                        {% endif %}   
+                        <br>      
+                        </thead>
+                        <br>
+                    </tbody>
+                </table>
+                <br>
+                <a href={{ path('home') }} class="btn btn-primary">retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

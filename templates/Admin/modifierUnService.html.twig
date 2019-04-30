@@ -1,0 +1,39 @@
+{% extends "fragment/_AdminNavbar.html.twig" %}
+
+
+
+{% block content %}
+<br>
+<div>
+    <center>
+        <h2>Page Administrateur</h2>
+    </center>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <left>
+                    <h2>Modifier un Service</h2>
+                </left>
+                <br>
+                <br>
+                <div>{#Formulaire de modification#}
+                    {{form_start(form2)}} {# ATTENTION PAS DESPACE ENTRE ACOLADE #}
+                    {{form_row(form2.nom, {'label':'Nom du Service'})}}
+                    {{form_row(form2.nbDroit, {'label':'Nombre de droit'})}}
+                    {{form_row(form2.pack, {'label':'choisir le service du pack ou aucun'})}}
+                    <button type="submit" class="btn btn-primary">modifier un service</button>
+                    {{form_end(form2)}}
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>    
+                <a href={{ path('addService') }} class="btn btn-secondary">retour à la gestion des services</a>
+              
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

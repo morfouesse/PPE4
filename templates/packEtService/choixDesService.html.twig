@@ -1,0 +1,85 @@
+{% extends "fragment/_navbar.html.twig" %}
+
+
+
+{% block content %}
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                            
+            
+                <left>
+                    <h2>Vos Services</h2>
+                </left>
+                <br>
+                <br>
+                        <tr>
+                            <th scope="col">Nom des services choisies</th>
+                            <th scope="col">nombres de droits des services</th>
+                            <th scope="col">utiliser un service</th>
+                            <th scope="col">enlever ce service</th>
+                        </tr>
+                    </thead>
+                    <tbody>                      
+                        {% for leServiceDuUser in lesServicesDuUser %}                                   
+                        <tr>
+                            <td>{{ leServiceDuUser.service.nom }}</td>
+                            <td>{{ leServiceDuUser.service.nbDroit }}</td>
+                            {% if leServiceDuUser.nbDroitUtiliser > leServiceDuUser.service.nbDroit %}
+                            <td><button class="btn btn-success" data-toggle="modal" data-target="#go">utiliser ce service</button></td>
+                                <!-- Modal -->
+                                <div class="modal fade" id="go" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">Modal title</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <p>Vous avez dépasser le nombre maximal d'utilisation du service</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                {# quand c'est faux on fait payer le user #}
+                                               
+                                              <button type="button" class="btn btn-primary">payer pour utiliser encore une fois le service</button>
+                                            
+                                                {# quand c'est vrai on lui supprime le service #}
+                                             
+                                                <button type="button" class="btn btn-primary">supprimmer le service</button>
+                                        
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <td><a href={{path('deleteService', {'idServicesDuUser': leServiceDuUser.id})}} class="btn btn-danger">enlever ce service</a></td>
+                                     
+                            {% elseif leServiceDuUser.statutDuServiceDuUser== 1 %}
+                            <td><a 
+                                 href="#" class="btn btn-success disabled"role="button" aria-disabled="true">ce service est utilisé</a>
+                            </td>                              
+                              {% else %}
+                                <td><a class="btn btn-success"
+                                    href={{path('ceService', {'idServiceDuUser': leServiceDuUser.id})}}>
+                                utiliser ce service</a></td>
+                               
+                            <td><a href={{path('deleteService', {'idServicesDuUser': leServiceDuUser.id})}} class="btn btn-danger">enlever ce service</a></td>
+                           {% endif %} 
+                           <td></td>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <left><a href={{ path('listeServiceSansPack',{'idPack':idPack}) }} class="btn btn-primary">ajouter un autre service</a></left>
+                <div class=pull-right><a href={{ path('home') }} class="btn btn-primary">retour à l'accueil</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

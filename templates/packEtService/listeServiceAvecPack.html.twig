@@ -1,0 +1,54 @@
+{% extends "fragment/_navbar.html.twig" %}
+
+
+
+{% block content %}
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+
+                        <tr>
+                            <th scope="col">Nom des services</th>
+                            <th scope="col">nombres de droits du service</th>
+                            <th scope="col">Choisir ce service</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        {% for leService in lesServices %}
+
+                        <tr>
+                            <td>{{ leService.nom }}</td>
+                            <td>{{ leService.nbDroit }}</td>
+                            {#verifie si le user à deja choisi le service#}
+                        </tr>
+                        {% endfor %}
+                </table>
+                <br>
+                <br>
+              
+
+                {% if packActif== 1 %}
+                <a href="#"
+                    class="btn btn-primary disabled" role="button" aria-disabled="true">choisir ce pack</a>
+                <br>
+                <small>ce pack est déjà réserver</small>
+
+                {% else %}
+                <a href={{ path('choixDuPack', {'password': password, 'id': packId}) }}
+                        class="btn btn-primary">choisir ce pack</a>
+                {% endif  %}
+               
+              
+                </tbody>
+
+                
+                <div class="pull-right"><a href={{ path('listePack', {'password': password}) }} class="btn btn-primary">retour à la liste des packs</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

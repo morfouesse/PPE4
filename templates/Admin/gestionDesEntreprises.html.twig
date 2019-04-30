@@ -1,0 +1,101 @@
+{% extends "fragment/_AdminNavbar.html.twig" %}
+
+
+
+{% block content %}
+<br>
+<div>
+    <center>
+        <h2>Page Administrateur</h2>
+    </center>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <br>
+                <br>
+                <left>
+                    <h2>Gestion des Entreprises</h2>
+                </left>
+                <br>
+                <br>
+                <div>
+                    {{form_start(form)}} {# ATTENTION PAS DESPACE ENTRE ACOLADE #}
+                    {{form_row(form.nom, {'label':'Nom d\'une Entreprise'})}}
+                    <button type="submit" class="btn btn-primary">ajouter une Entreprise</button>
+                    {{form_end(form)}}
+                </div>
+                <br>
+                <br>
+                {# liste des Entreprises#}
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nom des Entreprises</th>
+                                    <th>Ajouter un service</th>
+                                    <th>Modifier une Entreprise </th>
+                                    <th>Supprimer une Entreprise</th>
+                                </tr>
+                            <tbody>
+                                {% for uneEntreprise in lesEntreprises %}
+                                <tr>
+                                    <td>{{ uneEntreprise.nom }} </td>
+                                    <td> <a href={{ path('addUnServicedEntrepriseAdmin',{ 'id': uneEntreprise.id }) }} class="btn btn-primary">ajouter un service</a>
+                                    </td>
+                                    <td> <a href={{ path('changeCompany', {'id': uneEntreprise.id}) }}
+                                            class="btn btn-primary">modifier une entreprise</a></td>
+
+                                    <td> <a href={{ path('deleteCompany', {'id': uneEntreprise.id}) }}
+                                            class="btn btn-danger">supprimer une entreprise</a></td>
+                                </tr>
+                                {% endfor %}
+                                </thead>
+                            </tbody>
+                        </table>
+                        <br>
+                        <br>
+                        <left>
+                            <h3>
+                                Gestion des Services des Entreprises
+                            </h3>
+                        </left>
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nom des entreprises</th>
+                                    <th>Nom des services</th>
+                                    <th>Modifier un service</th>
+                                    <th>Supprimer un service appartenant à une entreprise</th>
+                                </tr>
+                            </thead>
+                            {% for unServicesdEntreprise in lesServicesdesEntreprises %}
+                            <tr>
+                                <td>{{ unServicesdEntreprise.entreprise.nom }} </td>
+                                <td>{{ unServicesdEntreprise.service.nom }}</td>
+                                <td>
+                                    <a href={{ path('modifyUnServicedEntrepriseAdmin',
+                                     {'id': unServicesdEntreprise.entreprise.id, 'idServiceDuneEntreprise': unServicesdEntreprise.id}) }}
+                                        class="btn btn-primary">changer de service</a>
+                                </td>
+                                <td>
+                                        <a href={{ path('deleteUnServicedEntrepriseAdmin',
+                                        { 'id': unServicesdEntreprise.id}) }}
+                                           class="btn btn-danger">supprimer ce service</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+
+                        <br>
+                        <a href={{ path('homeAdmin') }} class="btn btn-secondary">retour à l'accueil</a>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

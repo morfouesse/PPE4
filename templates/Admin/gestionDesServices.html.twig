@@ -1,0 +1,77 @@
+{% extends "fragment/_AdminNavbar.html.twig" %}
+
+
+
+{% block content %}
+<br>
+<div>
+    <center>
+        <h2>Page Administrateur</h2>
+    </center>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                    <br>
+                    <br>
+                <left>
+                    <h2>Gestion des services</h2>
+                </left>
+                <br>
+                <br>
+                {# creer un service #}
+                <div>
+                    {{form_start(form)}} {# ATTENTION PAS DESPACE ENTRE ACOLADE #}
+                    {{form_row(form.nom, {'label':'Nom du Service'})}}
+                    {{form_row(form.nbDroit, {'label':'Nombre de droit'})}}
+                    {{form_row(form.pack, {'label':'choisir le service du pack ou aucun'})}}
+                    <button type="submit" class="btn btn-primary">créer un service</button>
+                    {{form_end(form)}}
+                </div>
+                <br>
+                <br>
+                {# liste des services#}
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nom des services</th>
+                                    <th>Nombre de droit</th>
+                                    <th>Nom du pack</th>
+                                    <th>Modifier un service </th>
+                                    <th>Supprimer un service</th>
+                                </tr>
+                              </thead>
+                            <tbody>
+                                {% for leService in lesServices %}
+                               {# {% for lePack in lesPacks %}#}
+                                 <tr>
+                                        
+                                    <td>{{ leService.nom }} </td>
+                                    <td>{{ leService.nbDroit }} </td>
+                                   
+                              
+                                    <td>{{ leService.pack.nom }} </td>
+
+                                  
+                                    <td> <a href={{ path('changeServiceAdmin', {'id': leService.id}) }} class="btn btn-primary">modifier un service</a></td>
+                                  
+                                    <td> <a href={{ path('deleteServiceAdmin', {'id': leService.id}) }} class="btn btn-danger">supprimer le service</a></td>
+                                </tr>
+                                    
+                                {% endfor %}
+                              
+                            </tbody>
+                        </table>
+                        <br>
+                        <a href={{ path('homeAdmin') }} class="btn btn-secondary">retour à l'accueil</a>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "fragment/_AdminNavbar.html.twig" %}
+
+
+
+{% block content %}
+<br>
+<div>
+    <center>
+        <h2>Page Administrateur</h2>
+    </center>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                    <br>
+                    <br>
+                <left>
+                    <h2>Gestion des packs</h2>
+                </left>
+                <br>
+                <br>
+                <div>
+                    {{form_start(form)}} {# ATTENTION PAS DESPACE ENTRE ACOLADE #}
+                    {{form_row(form.nom, {'label':'Nom du Pack'})}}
+                    <button type="submit" class="btn btn-primary">ajouter un pack</button>
+                    {{form_end(form)}}
+                </div>
+                <br>
+                <br>
+                {# liste des packs#}
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nom des packs</th>
+                                    <th>Modifier un pack </th>
+                                    <th>Supprimer un pack</th>
+                                </tr>
+                            <tbody>
+                                {% for lePack in lesPacks %}
+                                <tr>
+                                    <td>{{ lePack.nom }} </td>
+                                  
+                                  
+                                    <td> <a href={{ path('changePack', {'id': lePack.id}) }} class="btn btn-primary">modifier un pack</a></td>
+                                  
+                                    <td> <a href={{ path('deletePack', {'id': lePack.id}) }} class="btn btn-danger">supprimer le pack</a></td>
+                                </tr>
+                                {% endfor %}
+                                </thead>
+                            </tbody>
+                        </table>
+                        <br>
+                        <a href={{ path('homeAdmin') }} class="btn btn-secondary">retour à l'accueil</a>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

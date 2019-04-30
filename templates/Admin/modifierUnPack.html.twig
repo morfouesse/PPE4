@@ -1,0 +1,37 @@
+{% extends "fragment/_AdminNavbar.html.twig" %}
+
+
+
+{% block content %}
+<br>
+<div>
+    <center>
+        <h2>Page Administrateur</h2>
+    </center>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <left>
+                    <h2>Modifier un Pack</h2>
+                </left>
+                <br>
+                <br>
+                <div>
+                    {{form_start(form2)}} {# ATTENTION PAS DESPACE ENTRE ACOLADE #}
+                    {{form_row(form2.nom, {'label':'Nom du Pack'})}}
+                    <button type="submit" class="btn btn-primary">modifier un pack</button>
+                    {{form_end(form2)}}
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>    
+                <a href={{ path('addPack') }} class="btn btn-secondary">retour à la gestion des packs</a>
+              
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

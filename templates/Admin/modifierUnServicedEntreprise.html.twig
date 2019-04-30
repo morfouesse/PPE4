@@ -1,0 +1,36 @@
+{% extends "fragment/_AdminNavbar.html.twig" %}
+{% block content %}
+<br>
+<div>
+    <center>
+        <h2>Page Administrateur</h2>
+    </center>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <br>
+                <br>
+                <left>
+                    <h2>modifier un service</h2>
+                </left>
+                <br>
+                <br>
+                <div>
+                    {{form_start(formLesServicesdesEntreprises)}} {# ATTENTION PAS DESPACE ENTRE ACOLADE #}
+                    {{form_row(formLesServicesdesEntreprises.service, {'label':' '})}}
+                    <button type="submit" class="btn btn-primary">changer de service</button>
+                    {{form_end(formLesServicesdesEntreprises)}}
+                </div>
+                <br>
+                <br>
+                <a href={{ path('addCompany') }} class="btn btn-secondary">retour à la gestion des entreprises</a>
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "fragment/_navbar.html.twig" %}
+
+
+
+{% block content %}
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+
+                        <tr>
+                            <th>Nom des packs</th>
+                            <th>Voir ces services</th>   
+                            <th>choisir un pack </th> 
+                        </tr>
+
+
+
+
+                    <tbody>
+                        {% for lePack in lesPacks %}
+                        {% if lePack.id!=11 %}
+                        <tr>
+                            
+                           <td>{{ lePack.nom }} </td>
+                           <td> </td>
+                           <td>  <a href={{ path('listeServiceAvecPack', { 'password':password,'idPack': lePack.id })  }} class="btn btn-primary">choisir ce pack</a></td>
+
+
+                        
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        </thead>
+                    </tbody>
+                </table>
+                <br>
+                <a href={{ path('home') }} class="btn btn-primary">retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

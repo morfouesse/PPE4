@@ -1,0 +1,34 @@
+{% block stylesheets %}<link rel="stylesheet" href="{{asset('build/css/app.css')}}">{% endblock %}
+
+
+{% block body %}
+
+<nav class="navbar navbar-expand-md bg-dark navbar-dark" >
+  <div class="container">
+     <a class="navbar-brand" href="/homeAdmin">Concierguance</a> <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent"></button>
+    <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+
+      <ul class="navbar-nav">
+          <a class="btn navbar-btn btn-dark ml-2 text-white" href="/gestion/ajouter/addPack"><i class="fa d-inline fa-lg fa-user-circle-o"></i>gestion des packs</a> </li>
+      </ul>
+      <ul class="navbar-nav">
+        <a class="btn navbar-btn btn-dark ml-2 text-white" href="/gestion/ajouter/addService"><i class="fa d-inline fa-lg fa-user-circle-o"></i> gestion des services</a>
+      </ul>
+      <ul class="navbar-nav">
+        <a class="btn navbar-btn btn-dark ml-2 text-white" href="/gestion/ajouter/addCompany"><i class="fa d-inline fa-lg fa-user-circle-o"></i> gestion des entreprises</a>
+      </ul>
+      <ul class="navbar-nav">
+      <a class="nav-item"> <a class="btn navbar-btn btn-dark ml-2 text-white" href="/deconnexion">se déconnecter</a>
+      </ul>
+        
+    </div>
+  </div>
+</nav>
+{% endblock %}
+  
+
+{% block content %} 
+{# pour chaque vue sinon pas de layout #}
+{% endblock %} 
+
+
