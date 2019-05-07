@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Pack;
 use App\Entity\User;
 use App\Entity\Service;
 use App\Entity\ServiceDuUser;
@@ -14,28 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ServiceController extends AbstractController
 {
-    /**
-     * @Route("/listeService/{idPack}", name="listeServiceAvecPack")
-     */
-    public function ListeService($idPack)
-    {
-        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findByPack($idPack);
-        foreach ($lesServices as $key => $leService) {
-            $packActif=$leService->getPack()->getActif();
-            $packId=$leService->getPack()->getId();
-        }
-      
-     
-        return $this->render('packEtService/listeServiceAvecPack.html.twig',array(
-            'lesServices'=>$lesServices,
-            'packActif'=>$packActif,
-            'packId'=>$packId
-           
-            
-            
-           
-        ));
-    }
 
      /**
      * @Route("/choisirService/sansPack/{idPack}", name="listeServiceSansPack")
@@ -66,10 +45,9 @@ class ServiceController extends AbstractController
               }
         }
         else{
-            $user=$this->getUser()->getId();
-            $limiteServiceSALARIE=True;
-            $limiteServiceCADRE=True;
-            $lesServicesDuUser=True;
+            $limiteServiceSALARIE=False;
+            $limiteServiceCADRE=False;
+            $lesServicesDuUser=False;
         }
       
         
@@ -108,7 +86,7 @@ class ServiceController extends AbstractController
         foreach($lesServices as $leService)
         {
             foreach ($lesServicesDuUser as  $leServiceDuUser) 
-            {// probleme a regle
+            {
                
                 $sm->serviceActif($leService,$leServiceDuUser,$om);    
               
@@ -132,8 +110,13 @@ class ServiceController extends AbstractController
         $leServiceDuUser=$lesServicesDuUser[0];
         //pour changer l'attribut "actif" pour le remetre a false j'ai besoin de l'objet Service
         $service=$lesServicesDuUser[0]->getService();
-        $sum->deleteServiceUser($service,$leServiceDuUser,$om);
-    
+
+        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findAll();
+        $lesPacks=$this->getDoctrine()->getRepository(Pack::class)->findAll();
+   
+
+        $sum->deleteServiceUser($service,$leServiceDuUser,$lesServices,$lesPacks,$om);
+        
         return $this->redirectToRoute('vosServices');
        
        
@@ -147,23 +130,33 @@ class ServiceController extends AbstractController
         $lesServicesDesUsers=$this->getDoctrine()->getRepository(ServiceDuUser::class)->findAll();
         //pour la methode nbdroitDepasse pour avoir le nombre de droit de chaque service reserver à chaque user
         $lesServices=$this->getDoctrine()->getRepository(Service::class)->findAll();
+        // initialise des variables
+        $lesServicesDuUser=array();
         foreach ($lesServicesDesUsers as $leServiceDuUser) {
                //desactive le service du user apres 1 mois
                  // regarder plus tard cette methode
              //  $sum->desactiveServiceDuUserApresUnMois($leServiceDuUser,$om);
              $sum->desactiveServiceDuUser($leServiceDuUser,$om);
          
-
+            
             //si l'id du user et l'id du user du service du user est commun alors
             //on l'affiche sous forme de liste
             if($leServiceDuUser->getUser()->getId()==$this->getUser()->getId())
             {
                 $lesServicesDuUser[]=$leServiceDuUser;
-               
             }
+          
         }
-     //   $nbDroitDepasseSupprimme=$sum->nbDroitDepasseSupprimme($lesServices,$lesServicesDuUser,$om);
-        $nbDroitPaye=$sum->nbDroitDepassePaye($lesServices,$lesServicesDuUser,$om);
+           // nombre de droit du service 
+           $nombreDroitDuService=$leServiceDuUser->getService()->getNbDroit();
+           //nombre de droit utiliser
+           $nbDroitUtiliser= $leServiceDuUser->getNbDroitUtiliser();
+       /*    if($nbDroitUtiliser>$nombreDroitDuService)
+           {
+            return $this->redirectToRoute("attentionChoix");
+           }*/
+      
+       
           //pour redirection
         $idPack=11; 
         $lesServicesDuPack=$this->getDoctrine()->getRepository(Service::class)->findByPack($idPack);
@@ -171,7 +164,7 @@ class ServiceController extends AbstractController
         return $this->render('packEtService/choixDesService.html.twig',[
             'lesServicesDuUser'=>$lesServicesDuUser,
             'idPack'=>$idPack,
-            'nbDroitPaye'=>$nbDroitPaye,
+            
         ]);
     }
 
@@ -188,5 +181,45 @@ class ServiceController extends AbstractController
 
         return $this->redirectToRoute('vosServices');
 
+    }
+      /**
+     * @Route("/choisirService/vosServices/choix", name="attentionChoix")
+     */
+    public function choix(ServiceDuUserManager $sum,ObjectManager $om)
+    {
+        $lesServicesDesUsers=$this->getDoctrine()->getRepository(ServiceDuUser::class)->findAll();
+        //pour la methode nbdroitDepasse pour avoir le nombre de droit de chaque service reserver à chaque user
+        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findAll();
+        // initialise des variables
+        $lesServicesDuUser=array();
+       // $nbDroitDepassePaye=0;
+       // $reutiliserService=0;
+      
+        foreach ($lesServicesDesUsers as $leServiceDuUser) {
+            //si l'id du user et l'id du user du service du user est commun alors
+            //on l'affiche sous forme de liste
+            if($leServiceDuUser->getUser()->getId()==$this->getUser()->getId())
+            {
+                
+                $lesServicesDuUser[]=$leServiceDuUser;
+              
+            }
+          
+        }
+        foreach ($lesServicesDuUser as $leServiceDuUser)
+         {
+        
+                $sum->nbDroitDepassePaye($leServiceDuUser,$om);
+                $sum->reutiliserService($leServiceDuUser,$om);
+               
+            
+        }
+           
+        return $this->render('packEtService/choixDuUser.html.twig',[
+            'lesServicesDuUser'=>$lesServicesDuUser,
+            
+          
+        ]);
+      
     }
 }

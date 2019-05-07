@@ -16,10 +16,9 @@ class ServiceDuUserManager
     public function addServiceUser(Service $service,User $user,$om){
         $serviceUser= new ServiceDuUser();
           // partie pour ajouter un service à un user
-          $tarif=0;
-        $serviceUser->setTarif($tarif);
         $serviceUser->setService($service);
         $serviceUser->setUser($user);
+        $serviceUser->setTarif(0);
         $serviceUser->setStatutDuServiceDuUser(0);
         $serviceUser->setNbDroitUtiliser(0);
         $serviceUser->setDateStrDuService(null);
@@ -27,8 +26,40 @@ class ServiceDuUserManager
         $om->flush();
     }
 
-    public function deleteServiceUser($service,$leServiceDuUser,$om){
+    public function deleteServiceUser($service,$leServiceDuUser,$lesServices,$lesPacks,$om){
         $service->setActif(0);
+        $om->flush();
+        
+        $lesServicesDunPack=array();
+        $lesServicesDesactiver=array();
+        foreach($lesServices as $leService)
+        {
+          if($leService->getPack()->getActif()== 1)
+          { //collection des services qui appartiennent à un pack
+            $lesServicesDunPack[]=$leService;
+          }
+        }  
+        foreach($lesServices as $leService)
+        {// si l'id du pack est différent de 11(auncun pack) et que le service n'est pas actif
+            if($leService->getPack()->getActif()== 1 && $leService->getActif() == 0)
+            {// collection des services désactiver
+              $lesServicesDesactiver[]=$leService;    
+            }
+        }
+        // compte le nombre de services dans un pack
+        $nbServicesDunPack=count($lesServicesDunPack);
+        // compte les services desactiver
+        $nbServices=count($lesServicesDesactiver);
+      
+          // si le nombre de services du pack non actif est égale au nombre de services present dans un pack
+                      // alors on desactive le pack
+        foreach ($lesPacks as $lePack) 
+        {
+          if($nbServices == $nbServicesDunPack)
+            {
+              $lePack->setActif(0);
+            } 
+        }
         $om->remove($leServiceDuUser);
         $om->flush();
     }
@@ -62,10 +93,10 @@ class ServiceDuUserManager
       //  si c'est un salarier et que le nombre de service du user est supérieur à 4
       if($leServiceDuUser->getUser()->getTypeUser()=="SALA" && $nbServiceDuUser>4)
       {
-        $VerifSALA=False;
+        $VerifSALA=True;
       }
       else{
-        $VerifSALA=True;
+        $VerifSALA=False;
       }
      return $VerifSALA;
     }
@@ -75,10 +106,10 @@ class ServiceDuUserManager
       $VerifCADR=False;
       if($leServiceDuUser->getUser()->getTypeUser()=="CADR" && $nbServiceDuUser>9)
       {
-        $VerifCADR=False;
+        $VerifCADR=True;
       }
       else{
-        $VerifCADR=True;
+        $VerifCADR=False;
       }
      return $VerifCADR;
     }
@@ -100,9 +131,8 @@ class ServiceDuUserManager
         $dateDuServicePlusUnJourSTR=date("Y-m-d",$dateFinTimestamp);
           //date du service du user plus un jour
           $dateDuServicePlusUnJour = date_create($dateDuServicePlusUnJourSTR);
-       
-          
-         if($dateActuelle==$dateDuServicePlusUnJour){
+           
+         if($dateActuelle>=$dateDuServicePlusUnJour){
             $leServiceDuUser->setStatutDuServiceDuUser(0);
             $leServiceDuUser->setDateStrDuService(null);
             $om->flush();
@@ -111,43 +141,49 @@ class ServiceDuUserManager
       return $leServiceDuUser;
     }
 
-      //si le nombtre de droit d'utilisation d'un service est dépassé alors on enleve le service du user
-      public function nbDroitDepasseSupprimme($lesServices,$lesServicesDuUser,$om)
-    {
-      foreach ($lesServicesDuUser as $leServiceDuUser) {
-          // nombre de droit du service 
-          $nombreDroitDuService=$leServiceDuUser->getService()->getNbDroit();
-          //nombre de droit utiliser
-          $nbDroitUtiliser= $leServiceDuUser->getNbDroitUtiliser();
-         if($nbDroitUtiliser>$nombreDroitDuService)
-         {
-           $service=$leServiceDuUser->getService();
-            $this->deleteServiceUser($service,$leServiceDuUser,$om);
-         }
-      }
-    }
      //si le nombtre de droit d'utilisation d'un service est dépassé alors il devra payer une somme pour l'utiliser encore une fois
-      public function nbDroitDepassePaye($lesServices,$lesServicesDuUser,$om)
-    {
-      foreach ($lesServicesDuUser as $leServiceDuUser) {
+      public function nbDroitDepassePaye($leServiceDuUser,$om)
+    { 
           // nombre de droit du service 
           $nombreDroitDuService=$leServiceDuUser->getService()->getNbDroit();
+          //tarif du service du user
+          $tarif=$leServiceDuUser->getTarif(); 
           //nombre de droit utiliser
           $nbDroitUtiliser= $leServiceDuUser->getNbDroitUtiliser();
-            if($nbDroitUtiliser>$nombreDroitDuService){
-              $tarif=$leServiceDuUser->getTarif();
-              //on ajoute 100 au tarif si le user choisie de payer
-              $tarif+=100;
-              // sa lui permet d'utiliser encore une fois le service
-              $nbDroitUtiliser-=1; 
+            if($nbDroitUtiliser>$nombreDroitDuService)
+            {
+              $tarif=$tarif+100;
+              $leServiceDuUser->setTarif($tarif);
+              $om->flush();     
             }
-      }
+      
+      return $tarif;
     }
+
+    //si le user a payer alors on enlevre un droit utiliser pour qu'il puisse le  réutiliser une fois
+    public function reutiliserService($leServiceDuUser,$om)
+    {
+     $res=0;
+      if($leServiceDuUser->getStatutDuServiceDuUser()== 1)
+      {
+         
+        //nombre de droit utiliser
+        $nbDroitUtiliser= $leServiceDuUser->getNbDroitUtiliser();
+        // sa lui permet d'utiliser encore une fois le service
+        $res=$nbDroitUtiliser-1;  
+      
+        $changeNbDroitUtiliser=$leServiceDuUser->setNbDroitUtiliser($res);
+        $om->flush();
+      }
+      return $res;
+    }
+
+   
   
 
       //si leServiceActiveDuUser est activer et si un mois est passé, alors le service du user est désactivé
       // regarder plus tard
-      public function desactiveServiceDuUserApresUnMois($leServiceDuUser,$om)
+     /* public function desactiveServiceDuUserApresUnMois($leServiceDuUser,$om)
       {
 
         $final = date("Y-m-d", strtotime("+1 month", $now='time()'));
@@ -155,16 +191,11 @@ class ServiceDuUserManager
         //ajoute un mois
         $dateFin->modify('+1 month');
         $dateActuel=  date("Y-m-d");
-        dump($dateFin);
-        dump($dateActuel);die;
         //tant que la date debut n'est pas égale à la date fin alors on 
           while($dateActuel!=$dateFin)
             {
               // ecrase la date actuel pour boucler sur la date actuel pour un jour finir sur la meme date que la date de fin
               $dateActuel= DateTime::createFromFormat('j-M-Y');
-             
-            
-             dump($dateActuel);die;
             }
               if($duree==$dateFin && $leServiceDuUser->getStatutDuServiceDuUser()==1)
               {
@@ -174,7 +205,7 @@ class ServiceDuUserManager
               
               }   
               return $leServiceDuUser;
-        }
+        }*/
      
 
 

@@ -63,6 +63,8 @@ class User implements UserInterface
      */
     private $serviceDuUsers;
 
+    
+
     public function __construct()
     {
         $this->serviceDuUsers = new ArrayCollection();
@@ -170,6 +172,8 @@ class User implements UserInterface
 
         return $this;
     }
+
+   
 
   
 }

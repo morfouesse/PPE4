@@ -18,11 +18,7 @@ class ServiceDuUser
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $tarif;
-
+  
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Service", inversedBy="serviceDuUsers")
@@ -49,6 +45,11 @@ class ServiceDuUser
      */
     private $dateStrDuService;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $tarif;
+
   
 
 
@@ -61,17 +62,6 @@ class ServiceDuUser
         return $this->id;
     }
 
-    public function getTarif(): ?float
-    {
-        return $this->tarif;
-    }
-
-    public function setTarif(float $tarif): self
-    {
-        $this->tarif = $tarif;
-
-        return $this;
-    }
 
 
     public function getService(): ?Service
@@ -131,6 +121,18 @@ class ServiceDuUser
     public function setDateStrDuService(?string $dateStrDuService): self
     {
         $this->dateStrDuService = $dateStrDuService;
+
+        return $this;
+    }
+
+    public function getTarif(): ?float
+    {
+        return $this->tarif;
+    }
+
+    public function setTarif(float $tarif): self
+    {
+        $this->tarif = $tarif;
 
         return $this;
     }

@@ -18,8 +18,8 @@
 
 
                     <tbody>{# si #}
-                        {% if limiteServiceSALARIE == 1 %}
-                        {% if limiteServiceCADRE == 1 %}
+                        {% if limiteServiceSALARIE == 0 %}
+                        {% if limiteServiceCADRE == 0 %}
                         {% for leService in lesServices %}
 
                         <tr>
@@ -40,11 +40,13 @@
                                  {% endif  %}  
                         </tr>             
                         {% endfor %} 
+
                         {% else %}
                         <h3>vous avez atteint la limite du nombre de service pour un cadre qui est de 10 services</h3>
                         <br>
                         <a href={{ path('vosServices',{ 'lesServicesDuUser':lesServicesDuUser,'idPack':idPack }) }} class="btn btn-primary">retour à vos services</a>
                         {% endif %}
+                        
                         {% else %}
                         <h3>vous avez atteint la limite du nombre de service pour un salarier qui est de 5 services</h3>
                         <br>

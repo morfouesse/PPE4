@@ -29,24 +29,12 @@
                 </table>
                 <br>
                 <br>
-              
-
-                {% if packActif== 1 %}
-                <a href="#"
-                    class="btn btn-primary disabled" role="button" aria-disabled="true">choisir ce pack</a>
-                <br>
-                <small>ce pack est déjà réserver</small>
-
-                {% else %}
-                <a href={{ path('choixDuPack', {'password': password, 'id': packId}) }}
-                        class="btn btn-primary">choisir ce pack</a>
-                {% endif  %}
-               
-              
+                <a href={{ path('choixDuPack', {'idPack': packId}) }}
+                        class="btn btn-primary">choisir les services de ce pack</a>
                 </tbody>
 
                 
-                <div class="pull-right"><a href={{ path('listePack', {'password': password}) }} class="btn btn-primary">retour à la liste des packs</a></div>
+                <div class="pull-right"><a href={{ path('listePack') }} class="btn btn-primary">retour à la liste des packs</a></div>
             </div>
         </div>
     </div>

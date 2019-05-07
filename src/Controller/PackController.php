@@ -7,6 +7,8 @@ use App\Entity\Pack;
 use App\Entity\User;
 use App\Entity\Service;
 use App\Manager\PackManager;
+use App\Entity\ServiceDuUser;
+use App\Manager\ServiceDuUserManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,45 +16,64 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PackController extends AbstractController
 {
     /**
-     * @Route("/listePack/{password}", name="listePack")
+     * @Route("/listePack", name="listePack")
      */
     public function ListePack()
     {
         $lesPacks=$this->getDoctrine()->getRepository(Pack::class)->findAll();
-        $password= $this->getUser()->getPassword();
-      
+       
      
             return $this->render('packEtService/listePack.html.twig',array(
                 'lesPacks'=>$lesPacks,
-                'password'=>$password
             ));
-            
-        
-
-       
     }
 
      /**
-     * @Route("/choixDuPack/{password}/{id}", name="choixDuPack")
+     * @Route("/listeService/{idPack}", name="listeServiceAvecPack")
      */
-    public function choixDuPack($id,PackManager $pm,ObjectManager $om)
+    public function ListeService($idPack)
     {
-        //l'id du pack des services
-        $lePack=$this->getDoctrine()->getRepository(Pack::class)->findById($id);
-        $password= $this->getUser()->getPassword();
-        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findByPack($lePack);
-        dump($lesServices);
+        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findByPack($idPack);
+        foreach ($lesServices as $leService) {
+            $packId=$leService->getPack()->getId();
+        }
+
+        return $this->render('packEtService/listeServiceAvecPack.html.twig',array(
+            'lesServices'=>$lesServices,
+            'packId'=>$packId     
+        ));
+    }
+
+     /**
+     * @Route("/choixDuPack/{idPack}", name="choixDuPack")
+     */
+    public function choixDuPack($idPack,PackManager $pm,ObjectManager $om,ServiceDuUserManager $sum)
+    {
+        // les services du packs
+        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findByPack($idPack);
+        // avoir acces au données du pack(array)
+        $pack=$this->getDoctrine()->getRepository(Pack::class)->findById($idPack);
+        // objet pack
+        $lePack=$pack[0];
             //parcour la collection
-            foreach ($lesServices as $key => $leService)
+            foreach ($lesServices as $leService)
             {
-                //les ids des services
-               $serviceId=$leService->getId();
+                //les ids du pack des services
+               $servicesIdDuPack=$leService->getPack()->getId();
             }
-        $pm->ActifPack($lePack,$serviceId,$om);
-        $idPackDesServices=$leService->getPack()->getId();
-        dump($serviceId);
-        die;
-        return $this->redirectToRoute('panier',['password'=>$password]);
+            // rendre le pack actif si il est selectionner
+            $pm->ActifPack($lePack,$servicesIdDuPack,$om);
+            //active les services du pack activé
+            $pm->ServiceDuPackActif($lesServices,$lePack,$servicesIdDuPack,$om);
+            // les services des users
+        $lesServicesDesUsers=$this->getDoctrine()->getRepository(ServiceDuUser::class)->findAll();
+        // le user actuel
+        $user=$this->getUser();
+         // ajoute les services d'un pack a des nouveaux services du user
+        $pm->ServiceDuUserAvecPack($sum,$user,$lesServices,$lePack,$servicesIdDuPack,$om);
+       
+        
+        return $this->redirectToRoute('vosServices');
        
     }
 

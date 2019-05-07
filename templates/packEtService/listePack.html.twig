@@ -15,10 +15,6 @@
                             <th>Voir ces services</th>   
                             <th>choisir un pack </th> 
                         </tr>
-
-
-
-
                     <tbody>
                         {% for lePack in lesPacks %}
                         {% if lePack.id!=11 %}
@@ -26,8 +22,20 @@
                             
                            <td>{{ lePack.nom }} </td>
                            <td> </td>
-                           <td>  <a href={{ path('listeServiceAvecPack', { 'password':password,'idPack': lePack.id })  }} class="btn btn-primary">choisir ce pack</a></td>
-
+                           {% if lePack.actif == 1 %}
+                           <td><a href="#"
+                            class="btn btn-primary disabled" role="button" aria-disabled="true">choisir les services de ce pack</a>
+                            <br>
+                            <small>ce pack est déjà réserver</small>
+                            </td>
+                           <br>
+                          
+           
+                           {% else %}
+                           <td>  <a href={{ path('listeServiceAvecPack', {'idPack': lePack.id })  }}
+                             class="btn btn-primary">choisir ce pack</a></td>
+                           {% endif  %}
+                        
 
                         
                         </tr>

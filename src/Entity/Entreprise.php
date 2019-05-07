@@ -26,7 +26,7 @@ class Entreprise
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ServiceDuneEntreprise", mappedBy="entreprise")
      */
-    private $serviceDuneEntreprise;
+    private $serviceDuneEntreprises;
 
 
    
@@ -34,7 +34,7 @@ class Entreprise
     public function __construct()
     {
         $this->packs = new ArrayCollection();
-        $this->serviceDuneEntreprise = new ArrayCollection();
+        $this->serviceDuneEntreprises = new ArrayCollection();
     }
 
    
@@ -57,30 +57,30 @@ class Entreprise
     }
 
     /**
-     * @return Collection|ServiceDuneEntreprise[]
+     * @return Collection|ServiceDuneEntreprises[]
      */
-    public function getServiceDuneEntreprise(): Collection
+    public function getServiceDuneEntreprises(): Collection
     {
-        return $this->serviceDuneEntreprise;
+        return $this->serviceDuneEntreprises;
     }
 
-    public function addServiceDuneEntreprise(ServiceDuneEntreprise $serviceDuneEntreprise): self
+    public function addServiceDuneEntreprises(ServiceDuneEntreprise $serviceDuneEntreprises): self
     {
-        if (!$this->serviceDuneEntreprise->contains($serviceDuneEntreprise)) {
-            $this->serviceDuneEntreprise[] = $serviceDuneEntreprise;
-            $serviceDuneEntreprise->setEntreprise($this);
+        if (!$this->serviceDuneEntreprises->contains($serviceDuneEntreprises)) {
+            $this->serviceDuneEntreprises[] = $serviceDuneEntreprises;
+            $serviceDuneEntreprises->setEntreprise($this);
         }
 
         return $this;
     }
 
-    public function removeServiceDuneEntreprise(ServiceDuneEntreprise $serviceDuneEntreprise): self
+    public function removeServiceDuneEntreprise(ServiceDuneEntreprise $serviceDuneEntreprises): self
     {
-        if ($this->serviceDuneEntreprise->contains($serviceDuneEntreprise)) {
-            $this->serviceDuneEntreprise->removeElement($serviceDuneEntreprise);
+        if ($this->serviceDuneEntreprises->contains($serviceDuneEntreprises)) {
+            $this->serviceDuneEntreprises->removeElement($serviceDuneEntreprises);
             // set the owning side to null (unless already changed)
-            if ($serviceDuneEntreprise->getEntreprise() === $this) {
-                $serviceDuneEntreprise->setEntreprise(null);
+            if ($serviceDuneEntreprises->getEntreprise() === $this) {
+                $serviceDuneEntreprises->setEntreprise(null);
             }
         }
 
