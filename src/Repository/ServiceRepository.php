@@ -19,22 +19,23 @@ class ServiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Service::class);
     }
 
-//    /**
-//     * @return Service[] Returns an array of Service objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Service[] Returns an array of Service objects
+     */
+    
+    public function lesServicesLesPlusUtilise()
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        $qb= $this->createQueryBuilder('s')
+            ->innerJoin('s.serviceDuUsers','c')
+            ->addSelect('c')
+            ->orderBy('c.nbDroitUtiliser', 'DESC')
+            ->select('s.nom,c.nbDroitUtiliser')
+            ->getQuery();
+        return $qb->execute()
         ;
     }
-    */
+  
+    
 
     /*
     public function findOneBySomeField($value): ?Service

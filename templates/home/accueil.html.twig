@@ -6,9 +6,35 @@
 <br>
 <br>
 <div>
-<center><h2>Parce que nous nous préoccupons de vous</h2></center>
+    <center>
+        <h2>Parce que nous nous préoccupons de vous</h2>
+    </center>
 </div>
-
-
+<br>
+<br>
+<div class="container">
+    <h5>Différentes entreprises proposent plusieurs services qui peuvent avoir un pack, ces services consistent à vous
+        simplifier la vie.</h5>
+        <br>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nom des services les plus utilisés</th>
+                        <th>nombre de fois utilisé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leService in lesServices %}
+                    <tr>
+                        <td>{{ leService.nom }} </td>
+                        <td>{{ leService.nbDroitUtiliser }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}
-
