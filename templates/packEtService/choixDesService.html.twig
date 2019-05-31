@@ -9,21 +9,6 @@
       <div class="col-md-12">
         <table class="table table-striped">
           <thead class="thead-dark">
-            {# grosse condition #}
-            {% for leServiceDuUser in lesServicesDuUser %}
-            {% if leServiceDuUser.nbDroitUtiliser > leServiceDuUser.service.nbDroit %}
-            <h3>Vous avez dépasser le nombre maximal d'utilisation du service {{  leServiceDuUser.service.nom }}</h3>
-            <h3> soit vous enlever le service soit vous payer 100€</h3>
-            <a href={{path('attentionChoix')}} class="btn btn-primary">payer pour utiliser encore une fois le
-              service</a>
-            <a href={{path('deleteService', {'idServicesDuUser': leServiceDuUser.id})}} class="btn btn-danger">enlever
-              ce service</a>
-            <br>
-            <br>
-            {% endif %}
-            {% endfor %}
-           
-
             <left>
               <h2>Vos Services</h2>
             </left>
@@ -32,6 +17,7 @@
             <tr>
               <th scope="col">Nom des services choisies</th>
               <th scope="col">nombres de droits des services</th>
+              <th scope="col">nombres de droits du service utilisé</th>
               <th scope="col">utiliser un service</th>
               <th scope="col">enlever ce service</th>
             </tr>
@@ -42,6 +28,7 @@
             <tr>
               <td>{{ leServiceDuUser.service.nom }}</td>
               <td>{{ leServiceDuUser.service.nbDroit }}</td>
+              <td>{{ leServiceDuUser.nbDroitUtiliser }}</td>
 
               {% if leServiceDuUser.statutDuServiceDuUser== 1 %}
               <td><a href="#" class="btn btn-success disabled" role="button" aria-disabled="true">ce service est

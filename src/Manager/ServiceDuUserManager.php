@@ -2,10 +2,11 @@
 
 namespace App\Manager;
 
+use DateTime;
 use App\Entity\User;
 use App\Entity\Service;
 use App\Entity\ServiceDuUser;
-use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 
@@ -178,6 +179,21 @@ class ServiceDuUserManager
       return $res;
     }
 
+    public function lesServicesDuUserDepasse($lesServicesDesUsers,$userId):ArrayCollection
+    {
+      $lesServicesDuUser=new ArrayCollection();
+      foreach ($lesServicesDesUsers as $leServiceDuUser) {
+          //si l'id du user et l'id du user du service du user est commun, ET que le service utilisé par le user a un nombre de droit utiliser
+          // supérieur au nombre de droit du service alors
+          //on l'affiche sous forme de liste
+          if($leServiceDuUser->getUser()->getId()==$userId &&
+           $leServiceDuUser->GetnbDroitUtiliser() > $leServiceDuUser->Getservice()->GetnbDroit())
+          {
+              $lesServicesDuUser->add($leServiceDuUser);
+          } 
+      }
+      return $lesServicesDuUser;
+    }
    
   
 

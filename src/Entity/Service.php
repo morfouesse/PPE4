@@ -49,6 +49,11 @@ class Service
      */
     private $actif;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $serviceInutilise;
+
   
 
 
@@ -172,6 +177,18 @@ class Service
     public function setActif(bool $actif): self
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    public function getServiceInutilise(): ?string
+    {
+        return $this->serviceInutilise;
+    }
+
+    public function setServiceInutilise(string $serviceInutilise): self
+    {
+        $this->serviceInutilise = $serviceInutilise;
 
         return $this;
     }

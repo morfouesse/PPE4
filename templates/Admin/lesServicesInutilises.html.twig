@@ -1,0 +1,49 @@
+{% extends "fragment/_AdminNavbar.html.twig" %}
+
+
+
+{% block content %}
+<br>
+<div>
+    <center>
+        <h2>Page Administrateur</h2>
+    </center>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <br>
+                <br>
+                <left>
+                    <h2>Gestion des services inutilisés</h2>
+                </left>
+                <br>
+                <br>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nom des services inutilisés</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>{# on parcourt la liste des services inutilisés #}
+                        {% for leServiceInutilise in lesServicesInutilises %}
+                        <tr>
+
+                            <td>{{ leServiceInutilise.nom }} </td>
+
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <div class=pull-right><a href={{ path('supprimmerlesServicesInutilises') }}
+                        class="btn btn-primary">supprimmer tous les services inutilisés</a></div>
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "fragment/_navbar.html.twig" %}
+
+
+
+{% block content %}
+<div class="py-5">
+    <div class="container">
+        {# grosse condition #}
+        {% for leServiceDuUser in lesServicesDuUserDepasse %}
+
+        <h3>Vous avez dépasser le nombre maximal d'utilisation du service {{  leServiceDuUser.service.nom }}</h3>
+        <h3> soit vous enlever le service soit vous payer 100€</h3>
+        <br>
+        
+        <a href={{path('attentionChoix')}} class="btn btn-primary">payer pour utiliser encore une fois le
+            service</a>
+         &nbsp;
+        <a href={{path('deleteService', {'idServicesDuUser': leServiceDuUser.id})}} class="btn btn-danger">enlever
+            ce service</a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

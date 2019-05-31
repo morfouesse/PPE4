@@ -128,7 +128,7 @@ class ServiceController extends AbstractController
     public function vosServices(ServiceDuUserManager $sum,ObjectManager $om)
     {
         $lesServicesDesUsers=$this->getDoctrine()->getRepository(ServiceDuUser::class)->findAll();
-        //pour la methode nbdroitDepasse pour avoir le nombre de droit de chaque service reserver à chaque user
+        //pour avoir acces au attribut de service
         $lesServices=$this->getDoctrine()->getRepository(Service::class)->findAll();
         // initialise des variables
         $lesServicesDuUser=array();
@@ -144,19 +144,15 @@ class ServiceController extends AbstractController
             if($leServiceDuUser->getUser()->getId()==$this->getUser()->getId())
             {
                 $lesServicesDuUser[]=$leServiceDuUser;
-            }
-          
+            } 
         }
-           // nombre de droit du service 
-           $nombreDroitDuService=$leServiceDuUser->getService()->getNbDroit();
-           //nombre de droit utiliser
-           $nbDroitUtiliser= $leServiceDuUser->getNbDroitUtiliser();
-       /*    if($nbDroitUtiliser>$nombreDroitDuService)
-           {
-            return $this->redirectToRoute("attentionChoix");
-           }*/
-      
-       
+            foreach($lesServicesDuUser as $leServiceDuUser)
+            {
+                if($leServiceDuUser->GetnbDroitUtiliser() > $leServiceDuUser->Getservice()->GetnbDroit())
+                {
+                    return $this->redirectToRoute('payerOuEnleverService');
+                } 
+            }
           //pour redirection
         $idPack=11; 
         $lesServicesDuPack=$this->getDoctrine()->getRepository(Service::class)->findByPack($idPack);
@@ -182,6 +178,27 @@ class ServiceController extends AbstractController
         return $this->redirectToRoute('vosServices');
 
     }
+
+    /**
+     * @Route("/choisirService/vosServices/payerOuEnlever", name="payerOuEnleverService")
+     */
+    public function payerOuEnlever(ServiceDuUserManager $sum)
+    {
+        $lesServicesDesUsers=$this->getDoctrine()->getRepository(ServiceDuUser::class)->findAll();
+        $userId=$this->getUser()->getId();
+         //pour avoir acces au attribut de service
+        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findAll();
+
+        $lesServicesDuUserDepasse=$sum->lesServicesDuUserDepasse($lesServicesDesUsers,$userId);
+       
+     
+        return $this->render('packEtService/payerOuEnlever.html.twig',[
+            'lesServicesDuUserDepasse'=>$lesServicesDuUserDepasse,
+        ]);
+
+    }
+
+
       /**
      * @Route("/choisirService/vosServices/choix", name="attentionChoix")
      */
@@ -222,4 +239,8 @@ class ServiceController extends AbstractController
         ]);
       
     }
+
+
+   
+      
 }

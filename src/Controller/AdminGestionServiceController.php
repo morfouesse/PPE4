@@ -5,9 +5,11 @@ namespace App\Controller;
 
 use App\Entity\Pack;
 use App\Entity\Service;
+use App\Entity\Entreprise;
 use App\Form\CreatePackType;
 use App\Form\CreateServiceType;
 use App\Manager\ServiceManager;
+use App\Entity\ServiceDuneEntreprise;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -81,6 +83,36 @@ class AdminGestionServiceController extends AbstractController
    
     }
 
-   
+     /**
+     * @Route("/gestion/serviceInutilise", name="serviceInutilise")
+     */
+    public function lesServicesInutilises(ServiceManager $sm)
+    {
+        //tous les services
+        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findAll();
+        // appelle la méthode pour avoir les services inutilisés
+        $lesServicesInutilises=$sm->lesServicesInutilises($lesServices);
+      
+       
+
+        return $this->render('Admin/lesServicesInutilises.html.twig',[
+            'lesServicesInutilises'=>$lesServicesInutilises
+        ]);
+          
+    }
+
+     /**
+     * @Route("/gestion/supprimmerlesServicesInutilises", name="supprimmerlesServicesInutilises")
+     */
+    public function supprimmerlesServicesInutilises(ServiceManager $sm,ObjectManager $om)
+    {   // la liste des services des entreprises
+        $lesServicesDesEntreprises=$this->getDoctrine()->getRepository(ServiceDuneEntreprise::class)->findAll();
+        // on a besoin de ce parametre pour la methode
+        $lesServices=$this->getDoctrine()->getRepository(Service::class)->findAll();
+          // appelle la méthode pour supprimer tous les services inutilises
+        $supprimentLesServiceInutilises=$sm->supprimentLesServiceInutilises($lesServicesDesEntreprises,$lesServices,$om);
+
+        return $this->redirectToRoute('serviceInutilise');
+    }
 
 }

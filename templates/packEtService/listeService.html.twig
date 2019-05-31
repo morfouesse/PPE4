@@ -7,6 +7,8 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                    {% if limiteServiceSALARIE == 0 %}
+                    {% if limiteServiceCADRE == 0 %}
                 <table class="table table-striped">
                     <thead class="thead-dark">
 
@@ -18,8 +20,7 @@
 
 
                     <tbody>{# si #}
-                        {% if limiteServiceSALARIE == 0 %}
-                        {% if limiteServiceCADRE == 0 %}
+                      
                         {% for leService in lesServices %}
 
                         <tr>
@@ -42,22 +43,19 @@
                         {% endfor %} 
 
                         {% else %}
-                        <h3>vous avez atteint la limite du nombre de service pour un cadre qui est de 10 services</h3>
-                        <br>
-                        <a href={{ path('vosServices',{ 'lesServicesDuUser':lesServicesDuUser,'idPack':idPack }) }} class="btn btn-primary">retour à vos services</a>
+                        <h3>vous avez atteint la limite du nombre de service pour un cadre qui est de 10 services</h3>             
+                        <a href={{ path('vosServices') }} class="btn btn-primary">retour à vos services</a>
+                        &nbsp;
                         {% endif %}
                         
                         {% else %}
                         <h3>vous avez atteint la limite du nombre de service pour un salarier qui est de 5 services</h3>
-                        <br>
-                        <a href={{ path('vosServices',{ 'lesServicesDuUser':lesServicesDuUser,'idPack':idPack }) }} class="btn btn-primary">retour à vos services</a>
-                        {% endif %}   
-                        <br>      
+                        <a href={{ path('vosServices') }} class="btn btn-primary">retour à vos services</a>
+                        &nbsp;
+                        {% endif %}      
                         </thead>
-                        <br>
                     </tbody>
                 </table>
-                <br>
                 <a href={{ path('home') }} class="btn btn-primary">retour à l'accueil</a>
             </div>
         </div>

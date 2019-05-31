@@ -7,44 +7,59 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                {% if limiteServiceSALARIE == 0 %}
+                {% if limiteServiceCADRE == 0 %}
                 <table class="table table-striped">
                     <thead class="thead-dark">
-
                         <tr>
                             <th>Nom des packs</th>
-                            <th>Voir ces services</th>   
-                            <th>choisir un pack </th> 
+                            <th>Voir ces services</th>
+                            <th>choisir un pack </th>
                         </tr>
                     <tbody>
                         {% for lePack in lesPacks %}
                         {% if lePack.id!=11 %}
                         <tr>
-                            
-                           <td>{{ lePack.nom }} </td>
-                           <td> </td>
-                           {% if lePack.actif == 1 %}
-                           <td><a href="#"
-                            class="btn btn-primary disabled" role="button" aria-disabled="true">choisir les services de ce pack</a>
-                            <br>
-                            <small>ce pack est déjà réserver</small>
-                            </td>
-                           <br>
-                          
-           
-                           {% else %}
-                           <td>  <a href={{ path('listeServiceAvecPack', {'idPack': lePack.id })  }}
-                             class="btn btn-primary">choisir ce pack</a></td>
-                           {% endif  %}
-                        
 
-                        
+                            <td>{{ lePack.nom }} </td>
+                            <td> </td>
+                            {% if lePack.actif == 1 %}
+                            <td><a href="#" class="btn btn-primary disabled" role="button" aria-disabled="true">choisir
+                                    les services de ce pack</a>
+                                <br>
+                                <small>ce pack est déjà réserver</small>
+                            </td>
+                            <br>
+
+
+                            {% else %}
+                            <td> <a href={{ path('listeServiceAvecPack', {'idPack': lePack.id })  }}
+                                    class="btn btn-primary">choisir ce pack</a></td>
+                            {% endif  %}
+
+
+
                         </tr>
                         {% endif %}
                         {% endfor %}
+                        {% else %}
+                        <h3>vous avez atteint la limite du nombre de service pour un cadre qui est de 10 services</h3>
+                        <br>
+                        <a href={{ path('vosServices') }}
+                            class="btn btn-primary">retour à vos services</a>
+                        &nbsp;
+                        {% endif %}
+
+                        {% else %}
+                        <h3>vous avez atteint la limite du nombre de service pour un salarier qui est de 5 services</h3>
+                        <br>
+                        <a href={{ path('vosServices') }}
+                            class="btn btn-primary">retour à vos services</a>
+                        &nbsp;
+                        {% endif %}
                         </thead>
                     </tbody>
                 </table>
-                <br>
                 <a href={{ path('home') }} class="btn btn-primary">retour à l'accueil</a>
             </div>
         </div>

@@ -4,6 +4,7 @@ namespace App\Manager;
 
 use App\Entity\Pack;
 use App\Entity\Service;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 
@@ -45,9 +46,41 @@ class ServiceManager{
        }
     }  
    
-    
+    //retourne la liste des services inutilisés
+    public function lesServicesInutilises($lesServices):ArrayCollection
+    {
+        // declaration d'une liste vide
+        $lesServicesInutilises=new ArrayCollection();
+        // on parcourt la liste des services
+        foreach($lesServices as $leService)
+        {
+            // si un service n'est pas actif alors on l'ajoute à la collection des services inutilisés
+            if($leService->GetActif()==0)
+            {
+                $lesServicesInutilises->add($leService);
+            }
+        }
+        return $lesServicesInutilises;
+    }
 
-
+    // supprime tous les services inutilises en fin d'annees
+    public function supprimentLesServiceInutilises($lesServicesDesEntreprises,$lesServices,$om)
+    {
+        // on parcourt la liste des services inutilises
+        foreach($this->lesServicesInutilises($lesServices) as $leServiceInutilise)
+        {
+            foreach($lesServicesDesEntreprises as $unServiceDuneEntreprise)
+            {// si un service dune entrepprise a le meme id que le service inutilisé alors on les supprimment
+               if($unServiceDuneEntreprise->GetService()->GetId()==$leServiceInutilise->GetId())
+               {  
+               $om->remove($unServiceDuneEntreprise);
+               $om->remove($leServiceInutilise);
+               $om->flush();
+               }
+            }
+        }
+      
+    }
 
     
 

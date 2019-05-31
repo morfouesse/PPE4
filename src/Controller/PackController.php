@@ -18,13 +18,39 @@ class PackController extends AbstractController
     /**
      * @Route("/listePack", name="listePack")
      */
-    public function ListePack()
+    public function ListePack(ServiceDuUserManager $sum)
     {
+        $lesServicesDesUsers=$this->getDoctrine()->getRepository(ServiceDuUser::class)->findAll();
         $lesPacks=$this->getDoctrine()->getRepository(Pack::class)->findAll();
        
+        foreach ($lesServicesDesUsers as $leServiceDuUser) {
+            //si l'id du user et l'id du user du service du user est commun alors
+            //on l'affiche sous forme de liste
+            if($leServiceDuUser->getUser()->getId()==$this->getUser()->getId())
+            {
+                $lesServicesDuUser[]=$leServiceDuUser;
+            }
+        }
+        if($leServiceDuUser->getUser()->getId()==$this->getUser()->getId())
+        {
+            $nbServiceDuUser=count($lesServicesDuUser);
+            foreach ($lesServicesDesUsers as $leServiceDuUser) {
+                $limiteServiceSALARIE=$sum->limiteServiceSALA($leServiceDuUser,$nbServiceDuUser);
+                $limiteServiceCADRE=$sum->limiteServiceCADR($leServiceDuUser,$nbServiceDuUser);
+              }
+        }
+        else{
+            $limiteServiceSALARIE=False;
+            $limiteServiceCADRE=False;
+            $lesServicesDuUser=False;
+        }
+      
      
             return $this->render('packEtService/listePack.html.twig',array(
                 'lesPacks'=>$lesPacks,
+                'limiteServiceSALARIE'=>$limiteServiceSALARIE,
+                'limiteServiceCADRE'=>$limiteServiceCADRE,
+                'lesServicesDuUser'=>$lesServicesDuUser,
             ));
     }
 
